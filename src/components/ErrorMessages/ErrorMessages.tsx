@@ -37,8 +37,8 @@ export const ErrorMessages: React.FC<Props> = ({
       />
       {/* show only one message at a time */}
       {errorMessage}
-      <br />
-      Unable to update a todo
+      {/* <br />
+      Unable to update a todo */}
     </div>
   );
 };

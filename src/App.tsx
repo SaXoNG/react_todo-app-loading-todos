@@ -33,9 +33,6 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setErrorMessage('Unable to load todos');
-        setTimeout(() => {
-          setErrorMessage('');
-        }, 3000);
       });
   }, []);
 
