@@ -1,12 +1,27 @@
-export const ErrorMessages = () => {
+import React from 'react';
+import cn from 'classnames';
+
+type Props = {
+  errorMessage: boolean;
+  setError: (error: boolean) => void;
+};
+
+export const ErrorMessages: React.FC<Props> = ({ errorMessage, setError }) => {
   return (
     <div
       data-cy="ErrorNotification"
-      className="notification is-danger is-light has-text-weight-normal"
+      className={cn('notification is-danger is-light has-text-weight-normal', {
+        hidden: errorMessage,
+      })}
     >
       {/* DON'T use conditional rendering to hide the notification */}
       {/* Add the 'hidden' class to hide the message smoothly */}
-      <button data-cy="HideErrorButton" type="button" className="delete" />
+      <button
+        data-cy="HideErrorButton"
+        type="button"
+        className="delete"
+        onClick={() => setError(true)}
+      />
       {/* show only one message at a time */}
       Unable to load todos
       <br />

@@ -7,6 +7,7 @@ import { Todo } from './types/Todo';
 import { FormField } from './components/FormField';
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
+import { ErrorMessages } from './components/ErrorMessages';
 
 const creatingTodoId = (todos: Todo[]): number => {
   const todosId: number[] = todos.map(todo => todo.id);
@@ -23,6 +24,7 @@ export const App: React.FC = () => {
   const [currentTodos, setCurrentTodos] = useState<Todo[]>([]);
   const [newTodoLoader, setNewTodoLoader] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [errorMessage, setErrorMessage] = useState(true);
 
   useEffect(() => {
     getTodos().then(todos => setCurrentTodos(todos));
@@ -81,6 +83,8 @@ export const App: React.FC = () => {
 
         {currentTodos.length > 0 && <Footer />}
       </div>
+
+      <ErrorMessages errorMessage={errorMessage} setError={setErrorMessage} />
     </div>
   );
 };
