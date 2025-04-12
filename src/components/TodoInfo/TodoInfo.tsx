@@ -7,6 +7,7 @@ type Props = {
   todo: Todo;
   currentTodos: Todo[];
   setTodos: (todos: Todo[]) => void;
+  setErrorMessage: (message: string) => void;
   inputRef: React.RefObject<HTMLInputElement>;
 };
 
@@ -14,6 +15,7 @@ export const TodoInfo: React.FC<Props> = ({
   todo,
   currentTodos,
   setTodos,
+  setErrorMessage,
   inputRef,
 }) => {
   const { id, title, completed } = todo;
@@ -35,15 +37,23 @@ export const TodoInfo: React.FC<Props> = ({
 
   const removeTodo = (todoId: number) => {
     setLoading(true);
-    deleteTodo(todoId);
-    const filterTodos: Todo[] = currentTodos.filter(
-      someTodo => someTodo.id !== todoId,
-    );
+    deleteTodo(todoId)
+      .then(() => {
+        const filterTodos: Todo[] = currentTodos.filter(
+          someTodo => someTodo.id !== todoId,
+        );
 
-    setTimeout(() => {
-      setTodos(filterTodos);
-      inputRef.current?.focus();
-    }, 500);
+        setTimeout(() => {
+          setTodos(filterTodos);
+          inputRef.current?.focus();
+        }, 500);
+      })
+      .catch(() => {
+        setTimeout(() => {
+          setErrorMessage('Unable to delete a todo');
+          setLoading(false);
+        }, 3000);
+      });
   };
 
   const checkingTodo = () => {
@@ -62,8 +72,9 @@ export const TodoInfo: React.FC<Props> = ({
   return (
     <div
       data-cy="Todo"
-      className={cn('todo', {
+      className={cn('todo item-enter-done', {
         completed: completedTodo,
+        'item-exit-time': true,
       })}
     >
       <label className="todo__status-label">

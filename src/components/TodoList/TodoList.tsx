@@ -4,6 +4,7 @@ import { TodoInfo } from '../TodoInfo';
 type Props = {
   todos: Todo[];
   setTodos: (todos: Todo[]) => void;
+  setErrorMessage: (message: string) => void;
   currentTitle: string;
   newTodoLoading: boolean;
   inputRef: React.RefObject<HTMLInputElement>;
@@ -12,6 +13,7 @@ type Props = {
 export const TodoList: React.FC<Props> = ({
   todos,
   setTodos,
+  setErrorMessage,
   currentTitle,
   newTodoLoading,
   inputRef,
@@ -26,6 +28,7 @@ export const TodoList: React.FC<Props> = ({
             setTodos={setTodos}
             currentTodos={todos}
             inputRef={inputRef}
+            setErrorMessage={setErrorMessage}
           />
         );
       })}

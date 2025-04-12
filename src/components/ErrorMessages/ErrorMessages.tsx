@@ -1,17 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 
 type Props = {
-  errorMessage: boolean;
-  setError: (error: boolean) => void;
+  errorMessage: string;
+  setErrorMessage: (errorMessage: string) => void;
 };
 
-export const ErrorMessages: React.FC<Props> = ({ errorMessage, setError }) => {
+export const ErrorMessages: React.FC<Props> = ({
+  errorMessage,
+  setErrorMessage,
+}) => {
+  const [hideMessage, setHideMessage] = useState(false);
+  const something = () => {
+    setHideMessage(true);
+
+    setTimeout(() => {
+      setErrorMessage('');
+      setHideMessage(false);
+    }, 1000);
+  };
+
   return (
     <div
       data-cy="ErrorNotification"
       className={cn('notification is-danger is-light has-text-weight-normal', {
-        hidden: errorMessage,
+        hidden: hideMessage,
       })}
     >
       {/* DON'T use conditional rendering to hide the notification */}
@@ -20,16 +33,10 @@ export const ErrorMessages: React.FC<Props> = ({ errorMessage, setError }) => {
         data-cy="HideErrorButton"
         type="button"
         className="delete"
-        onClick={() => setError(true)}
+        onClick={something}
       />
       {/* show only one message at a time */}
-      Unable to load todos
-      <br />
-      Title should not be empty
-      <br />
-      Unable to add a todo
-      <br />
-      Unable to delete a todo
+      {errorMessage}
       <br />
       Unable to update a todo
     </div>

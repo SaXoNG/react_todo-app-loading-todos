@@ -24,10 +24,19 @@ export const App: React.FC = () => {
   const [currentTodos, setCurrentTodos] = useState<Todo[]>([]);
   const [newTodoLoader, setNewTodoLoader] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [errorMessage, setErrorMessage] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    getTodos().then(todos => setCurrentTodos(todos));
+    getTodos()
+      .then(todos => {
+        setCurrentTodos(todos);
+      })
+      .catch(() => {
+        setErrorMessage('Unable to load todos');
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 3000);
+      });
   }, []);
 
   if (!USER_ID) {
@@ -49,15 +58,28 @@ export const App: React.FC = () => {
   const addTodo = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!title) {
+      setErrorMessage('Title should not be empty');
+
+      return;
+    }
+
     setNewTodoLoader(true);
-    postTodo(newTodo);
+    postTodo(newTodo)
+      .then(() => {
+        setTimeout(() => {
+          setNewTodoLoader(false);
 
-    setTimeout(() => {
-      setNewTodoLoader(false);
-
-      setCurrentTodos([...currentTodos, newTodo]);
-      setTitle('');
-    }, 500);
+          setCurrentTodos([...currentTodos, newTodo]);
+          setTitle('');
+        }, 500);
+      })
+      .catch(() => {
+        setTimeout(() => {
+          setErrorMessage('Unable to add a todo');
+          setNewTodoLoader(false);
+        }, 3000);
+      });
   };
 
   return (
@@ -79,12 +101,18 @@ export const App: React.FC = () => {
           currentTitle={title}
           newTodoLoading={newTodoLoader}
           inputRef={inputRef}
+          setErrorMessage={setErrorMessage}
         />
 
         {currentTodos.length > 0 && <Footer />}
       </div>
 
-      <ErrorMessages errorMessage={errorMessage} setError={setErrorMessage} />
+      {errorMessage && (
+        <ErrorMessages
+          errorMessage={errorMessage}
+          setErrorMessage={setErrorMessage}
+        />
+      )}
     </div>
   );
 };
