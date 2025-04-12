@@ -17,7 +17,7 @@ export const ErrorMessages: React.FC<Props> = ({
     setTimeout(() => {
       setErrorMessage('');
       setHideMessage(false);
-    }, 1000);
+    }, 200);
   };
 
   return (

@@ -69,13 +69,13 @@ export const App: React.FC = () => {
 
           setCurrentTodos([...currentTodos, newTodo]);
           setTitle('');
-        }, 500);
+        }, 200);
       })
       .catch(() => {
         setTimeout(() => {
           setErrorMessage('Unable to add a todo');
           setNewTodoLoader(false);
-        }, 3000);
+        }, 200);
       });
   };
 

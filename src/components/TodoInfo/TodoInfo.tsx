@@ -46,13 +46,13 @@ export const TodoInfo: React.FC<Props> = ({
         setTimeout(() => {
           setTodos(filterTodos);
           inputRef.current?.focus();
-        }, 500);
+        }, 200);
       })
       .catch(() => {
         setTimeout(() => {
           setErrorMessage('Unable to delete a todo');
           setLoading(false);
-        }, 3000);
+        }, 200);
       });
   };
 
@@ -66,7 +66,7 @@ export const TodoInfo: React.FC<Props> = ({
       }
 
       setLoading(false);
-    }, 500);
+    }, 200);
   };
 
   return (
