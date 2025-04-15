@@ -127,7 +127,7 @@ export const App: React.FC = () => {
           })}
 
           {/* This is a completed todo */}
-          <div data-cy="Todo" className="todo completed">
+          {/* <div data-cy="Todo" className="todo completed">
             <label className="todo__status-label">
               <input
                 data-cy="TodoStatus"
@@ -139,22 +139,22 @@ export const App: React.FC = () => {
 
             <span data-cy="TodoTitle" className="todo__title">
               Completed Todo
-            </span>
+            </span> */}
 
-            {/* Remove button appears only on hover */}
-            <button type="button" className="todo__remove" data-cy="TodoDelete">
+          {/* Remove button appears only on hover */}
+          {/* <button type="button" className="todo__remove" data-cy="TodoDelete">
               ×
-            </button>
+            </button> */}
 
-            {/* overlay will cover the todo while it is being deleted or updated */}
-            <div data-cy="TodoLoader" className="modal overlay">
+          {/* overlay will cover the todo while it is being deleted or updated */}
+          {/* <div data-cy="TodoLoader" className="modal overlay">
               <div className="modal-background has-background-white-ter" />
               <div className="loader" />
             </div>
-          </div>
+          </div> */}
 
           {/* This todo is an active todo */}
-          <div data-cy="Todo" className="todo">
+          {/* <div data-cy="Todo" className="todo">
             <label className="todo__status-label">
               <input
                 data-cy="TodoStatus"
@@ -174,10 +174,10 @@ export const App: React.FC = () => {
               <div className="modal-background has-background-white-ter" />
               <div className="loader" />
             </div>
-          </div>
+          </div> */}
 
           {/* This todo is being edited */}
-          <div data-cy="Todo" className="todo">
+          {/* <div data-cy="Todo" className="todo">
             <label className="todo__status-label">
               <input
                 data-cy="TodoStatus"
@@ -187,7 +187,7 @@ export const App: React.FC = () => {
             </label>
 
             {/* This form is shown instead of the title and remove button */}
-            <form>
+          {/* <form>
               <input
                 data-cy="TodoTitleField"
                 type="text"
@@ -201,10 +201,10 @@ export const App: React.FC = () => {
               <div className="modal-background has-background-white-ter" />
               <div className="loader" />
             </div>
-          </div>
+          </div> */}
 
           {/* This todo is in loadind state */}
-          <div data-cy="Todo" className="todo">
+          {/* <div data-cy="Todo" className="todo">
             <label className="todo__status-label">
               <input
                 data-cy="TodoStatus"
@@ -222,11 +222,11 @@ export const App: React.FC = () => {
             </button>
 
             {/* 'is-active' class puts this modal on top of the todo */}
-            <div data-cy="TodoLoader" className="modal overlay is-active">
+          {/* <div data-cy="TodoLoader" className="modal overlay is-active">
               <div className="modal-background has-background-white-ter" />
               <div className="loader" />
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
         </section>
 
         {/* Hide the footer if there are no todos */}
