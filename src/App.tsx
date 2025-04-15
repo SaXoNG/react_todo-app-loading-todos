@@ -1,13 +1,73 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { UserWarning } from './UserWarning';
-import { USER_ID } from './api/todos';
+import { getTodos, USER_ID } from './api/todos';
+import { Todo } from './types/Todo';
+
+type FilterParam = 'all' | 'active' | 'completed';
 
 export const App: React.FC = () => {
+  const [todosFromServer, setTodosFromServer] = useState<Todo[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const activeTodosAmount = todosFromServer.filter(
+    todo => !todo.completed,
+  ).length;
+
+  const selectedFilter = useRef<HTMLAnchorElement | null>(null);
+
+  useEffect(() => {
+    getTodos()
+      .then(todos => {
+        setTodosFromServer(todos);
+        setFilteredTodos(todos);
+
+        if (selectedFilter.current) {
+          selectedFilter.current.classList.add('selected');
+        }
+      })
+      .catch(() => {
+        setErrorMessage('Unable to load todos');
+      });
+  }, []);
+
   if (!USER_ID) {
     return <UserWarning />;
   }
+
+  const filter = (
+    todos: Todo[],
+    filterParam: FilterParam,
+  ): React.MouseEventHandler<HTMLAnchorElement> => {
+    return event => {
+      event.preventDefault();
+
+      if (selectedFilter.current) {
+        selectedFilter.current.classList.remove('selected');
+      }
+
+      event.currentTarget.classList.add('selected');
+      selectedFilter.current = event.currentTarget;
+
+      switch (filterParam) {
+        case 'all':
+          setFilteredTodos(todos);
+          break;
+
+        case 'active':
+          setFilteredTodos(todos.filter(todo => !todo.completed));
+          break;
+
+        case 'completed':
+          setFilteredTodos(todos.filter(todo => todo.completed));
+          break;
+
+        default:
+          setFilteredTodos(todos);
+      }
+    };
+  };
 
   return (
     <div className="todoapp">
@@ -34,6 +94,38 @@ export const App: React.FC = () => {
         </header>
 
         <section className="todoapp__main" data-cy="TodoList">
+          {filteredTodos.map(todo => {
+            const { id, title } = todo;
+
+            return (
+              <div data-cy="Todo" className="todo" key={id}>
+                <label className="todo__status-label">
+                  <input
+                    data-cy="TodoStatus"
+                    type="checkbox"
+                    className="todo__status"
+                  />
+                </label>
+
+                <span data-cy="TodoTitle" className="todo__title">
+                  {title}
+                </span>
+                <button
+                  type="button"
+                  className="todo__remove"
+                  data-cy="TodoDelete"
+                >
+                  ×
+                </button>
+
+                <div data-cy="TodoLoader" className="modal overlay">
+                  <div className="modal-background has-background-white-ter" />
+                  <div className="loader" />
+                </div>
+              </div>
+            );
+          })}
+
           {/* This is a completed todo */}
           <div data-cy="Todo" className="todo completed">
             <label className="todo__status-label">
@@ -140,15 +232,17 @@ export const App: React.FC = () => {
         {/* Hide the footer if there are no todos */}
         <footer className="todoapp__footer" data-cy="Footer">
           <span className="todo-count" data-cy="TodosCounter">
-            3 items left
+            {`${activeTodosAmount}items left`}
           </span>
 
           {/* Active link should have the 'selected' class */}
           <nav className="filter" data-cy="Filter">
             <a
               href="#/"
-              className="filter__link selected"
+              className="filter__link"
               data-cy="FilterLinkAll"
+              ref={selectedFilter}
+              onClick={filter(todosFromServer, 'all')}
             >
               All
             </a>
@@ -157,6 +251,7 @@ export const App: React.FC = () => {
               href="#/active"
               className="filter__link"
               data-cy="FilterLinkActive"
+              onClick={filter(todosFromServer, 'active')}
             >
               Active
             </a>
@@ -165,6 +260,7 @@ export const App: React.FC = () => {
               href="#/completed"
               className="filter__link"
               data-cy="FilterLinkCompleted"
+              onClick={filter(todosFromServer, 'completed')}
             >
               Completed
             </a>
@@ -183,22 +279,30 @@ export const App: React.FC = () => {
 
       {/* DON'T use conditional rendering to hide the notification */}
       {/* Add the 'hidden' class to hide the message smoothly */}
-      <div
-        data-cy="ErrorNotification"
-        className="notification is-danger is-light has-text-weight-normal"
-      >
-        <button data-cy="HideErrorButton" type="button" className="delete" />
-        {/* show only one message at a time */}
-        Unable to load todos
-        <br />
-        Title should not be empty
-        <br />
-        Unable to add a todo
-        <br />
-        Unable to delete a todo
-        <br />
-        Unable to update a todo
-      </div>
+      {errorMessage && (
+        <div
+          data-cy="ErrorNotification"
+          className="notification is-danger is-light has-text-weight-normal"
+        >
+          <button
+            data-cy="HideErrorButton"
+            type="button"
+            className="delete"
+            onClick={() => setErrorMessage('')}
+          />
+          {/* show only one message at a time */}
+          {errorMessage}
+          {/* Unable to load todos
+          <br />
+          Title should not be empty
+          <br />
+          Unable to add a todo
+          <br />
+          Unable to delete a todo
+          <br />
+          Unable to update a todo */}
+        </div>
+      )}
     </div>
   );
 };
