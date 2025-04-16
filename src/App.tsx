@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, USER_ID } from './api/todos';
 import { Todo } from './types/Todo';
+import cn from 'classnames';
 
 type FilterParam = 'all' | 'active' | 'completed';
 
@@ -29,6 +30,10 @@ export const App: React.FC = () => {
       })
       .catch(() => {
         setErrorMessage('Unable to load todos');
+
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 3000);
       });
   }, []);
 
@@ -282,20 +287,24 @@ export const App: React.FC = () => {
 
       {/* DON'T use conditional rendering to hide the notification */}
       {/* Add the 'hidden' class to hide the message smoothly */}
-      {errorMessage && (
-        <div
-          data-cy="ErrorNotification"
-          className="notification is-danger is-light has-text-weight-normal"
-        >
-          <button
-            data-cy="HideErrorButton"
-            type="button"
-            className="delete"
-            onClick={() => setErrorMessage('')}
-          />
-          {/* show only one message at a time */}
-          {errorMessage}
-          {/* Unable to load todos
+      <div
+        data-cy="ErrorNotification"
+        className={cn(
+          'notification is-danger is-light has-text-weight-normal',
+          {
+            hidden: !errorMessage,
+          },
+        )}
+      >
+        <button
+          data-cy="HideErrorButton"
+          type="button"
+          className="delete"
+          onClick={() => setErrorMessage('')}
+        />
+        {/* show only one message at a time */}
+        {errorMessage}
+        {/* Unable to load todos
           <br />
           Title should not be empty
           <br />
@@ -304,8 +313,7 @@ export const App: React.FC = () => {
           Unable to delete a todo
           <br />
           Unable to update a todo */}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
