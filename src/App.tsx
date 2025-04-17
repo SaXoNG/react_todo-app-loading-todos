@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, USER_ID } from './api/todos';
 import { Todo } from './types/Todo';
-import cn from 'classnames';
 import { FormField } from './components/FormField';
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
@@ -48,7 +47,7 @@ export const App: React.FC = () => {
 
         {/* Hide the footer if there are no todos */}
 
-        {todosFromServer && (
+        {todosFromServer.length > 0 && (
           <Footer
             activeTodos={activeTodosAmount}
             todosFromServer={todosFromServer}
@@ -61,36 +60,6 @@ export const App: React.FC = () => {
         errorMessage={errorMessage}
         setErrorMessage={setErrorMessage}
       />
-
-      {/* DON'T use conditional rendering to hide the notification */}
-      {/* Add the 'hidden' class to hide the message smoothly */}
-      <div
-        data-cy="ErrorNotification"
-        className={cn(
-          'notification is-danger is-light has-text-weight-normal',
-          {
-            hidden: !errorMessage,
-          },
-        )}
-      >
-        <button
-          data-cy="HideErrorButton"
-          type="button"
-          className="delete"
-          onClick={() => setErrorMessage('')}
-        />
-        {/* show only one message at a time */}
-        {errorMessage}
-        {/* Unable to load todos
-          <br />
-          Title should not be empty
-          <br />
-          Unable to add a todo
-          <br />
-          Unable to delete a todo
-          <br />
-          Unable to update a todo */}
-      </div>
     </div>
   );
 };

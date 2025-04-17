@@ -31,6 +31,7 @@ export const TodoInfo: React.FC<Props> = ({ todo }) => {
           type="checkbox"
           className="todo__status"
           onClick={completeTodo}
+          checked={todoClass === 'todo completed'}
         />
         {''}
       </label>
