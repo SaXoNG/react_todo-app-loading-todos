@@ -1,95 +1,72 @@
-import React, { useEffect, useRef } from 'react';
-import { Todo } from '../../types/Todo';
+import React from 'react';
+import { FilterOptions } from '../../types/FilterOptions';
+import cn from 'classnames';
 
 type Props = {
-  activeTodos: number;
-  todosFromServer: Todo[];
-  filteredTodosSetter: (filteredTodo: Todo[]) => void;
+  activeTodosCount: number;
+  todosFilter: FilterOptions;
+  setTodosFilter: (filterState: FilterOptions) => void;
 };
 
-type FilterParam = 'all' | 'active' | 'completed';
-
 export const Footer: React.FC<Props> = ({
-  activeTodos,
-  todosFromServer,
-  filteredTodosSetter,
+  activeTodosCount,
+  todosFilter,
+  setTodosFilter,
 }) => {
-  const selectedFilter = useRef<HTMLAnchorElement | null>(null);
-
-  useEffect(() => {
-    if (selectedFilter.current) {
-      selectedFilter.current.classList.add('selected');
-    }
-  }, []);
-
-  const filter = (
-    todos: Todo[],
-    filterParam: FilterParam,
-  ): React.MouseEventHandler<HTMLAnchorElement> => {
-    return event => {
-      event.preventDefault();
-
-      if (selectedFilter.current) {
-        selectedFilter.current.classList.remove('selected');
-      }
-
-      event.currentTarget.classList.add('selected');
-      selectedFilter.current = event.currentTarget;
-
-      switch (filterParam) {
-        case 'all':
-          filteredTodosSetter(todos);
-          break;
-
-        case 'active':
-          filteredTodosSetter(todos.filter(todo => !todo.completed));
-          break;
-
-        case 'completed':
-          filteredTodosSetter(todos.filter(todo => todo.completed));
-          break;
-
-        default:
-          filteredTodosSetter(todos);
-      }
-    };
-  };
-
   return (
     <footer className="todoapp__footer" data-cy="Footer">
       <span className="todo-count" data-cy="TodosCounter">
-        {`${activeTodos} items left`}
+        {`${activeTodosCount} items left`}
       </span>
 
       {/* Active link should have the 'selected' class */}
       <nav className="filter" data-cy="Filter">
-        <a
+        {Object.values(FilterOptions).map(option => {
+          return (
+            <a
+              href={`#/${option}`}
+              className={cn('filter__link', {
+                selected: option === todosFilter,
+              })}
+              data-cy={`FilterLink${option}`}
+              key={option}
+              onClick={() => setTodosFilter(option)}
+            >
+              {option}
+            </a>
+          );
+        })}
+
+        {/* <a
+          name="all"
           href="#/"
           className="filter__link"
           data-cy="FilterLinkAll"
           ref={selectedFilter}
-          onClick={filter(todosFromServer, 'all')}
+          onClick={something}
         >
           All
         </a>
 
         <a
+          name="active"
           href="#/active"
           className="filter__link"
           data-cy="FilterLinkActive"
-          onClick={filter(todosFromServer, 'active')}
+          onClick={something}
         >
           Active
         </a>
 
         <a
+          name="completed"
           href="#/completed"
           className="filter__link"
           data-cy="FilterLinkCompleted"
-          onClick={filter(todosFromServer, 'completed')}
+          onClick={something}
         >
           Completed
-        </a>
+        </a> */}
       </nav>
 
       {/* this button should be disabled if there are no completed todos */}
